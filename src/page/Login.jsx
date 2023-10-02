@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 
 const Login = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, googleWithSignIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -13,9 +14,21 @@ const Login = () => {
     signInUser(email, password)
       .then((results) => {
         console.log(results.user);
+        e.target.reset();
+        navigate("/");
       })
       .catch((error) => console.error(error));
   };
+
+  const handleGoogleSignIn = () => {
+    googleWithSignIn()
+      .then((results) => {
+        navigate("/");
+        console.log(results.user);
+      })
+      .catch((error) => console.error(error));
+  };
+
   return (
     <div>
       <div className="hero min-h-screen bg-base-200">
@@ -60,9 +73,12 @@ const Login = () => {
               <p>
                 New Here? Please{" "}
                 <Link to={"/register"}>
-                  <button className="btn btn-link">Register</button>{" "}
-                </Link>{" "}
+                  <button className="btn btn-link">Register</button>
+                </Link>
               </p>
+              <button onClick={handleGoogleSignIn} className="btn btn-ghost">
+                Continue with Google
+              </button>
             </div>
           </div>
         </div>
